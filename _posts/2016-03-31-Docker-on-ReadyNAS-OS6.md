@@ -1,11 +1,12 @@
 ---
 layout: post
-title: Running Docker on ReadyNAS OS6 (VM) - From start to finish
-published: false
-tags:
-- docker
-- readynas
+title: Running Docker on ReadyNAS OS6 VM - From start to finish
+published: true
 ---
+
+As it turns out, not as difficult as I thought.  On a VM at least...
+
+> *NOTE: This post will likely be updated later with code I actually checked...*
 
 ## Running Docker on ReadyNAS OS6 - From start to finish
 
@@ -15,9 +16,10 @@ In the short term, I've instead started testing the idea by using the ReadyNAS V
 ### Getting a VM started
 
 So on a dev rig with VirtualBox installed, I download the VM and get started.
-Browse to: http://apps.readynas.com/pages/?page_id=143 and grab the VM file.
+Browse to: <http://apps.readynas.com/pages/?page_id=143> and grab the VM file.
 
-```wget http://apps.readynas.com/download/ReadyNASOS-6.4.2-x86_64.vmdk
+```
+wget http://apps.readynas.com/download/ReadyNASOS-6.4.2-x86_64.vmdk
 ```
 
 Follow the instructions (on the ReadyNAS page) to get a running VM on VirtualBox before going any further.  In my case, I had to reboot to turn off HyperV, as HyperV and VirtualBox don't play well when running 64 bit VMs.
@@ -25,21 +27,21 @@ Follow the instructions (on the ReadyNAS page) to get a running VM on VirtualBox
 ### Upgrade to latest beta
 
 Once you've got the VM running, I'd take a snapshot and then upgrade to the latest beta.  You can grab the upgrade to 6.5.0 Beta 2 here:
-https://community.netgear.com/t5/ReadyNAS-Beta-Release/ReadyNASOS-6-5-0-T338-Beta-2/m-p/1059936#U1059936
+<https://community.netgear.com/t5/ReadyNAS-Beta-Release/ReadyNASOS-6-5-0-T338-Beta-2/m-p/1059936#U1059936>
 
 Download the relevant img file, go to your virtual NAS in a browser and upgrade to 6.5.0.
 
-- Browse to e.g. https://192.168.1.100/admin/
+- Browse to e.g. <https://192.168.1.100/admin/>
 - Manual install firmware
 - Select the image file you just downloaded
 
 This will take a while, so sit back and enjoy the blinkenlights.  Grab a coffee or something.  Once that's done, make sure you have SSH enabled on the Virtual NAS (on the Admin -> Settings screen) and SSH into the VM.  
 
-```uname -a
 ```
-
-You should get something matching the new Kernel:
+uname -a
+# You should get something matching the new kernel, e.g.:
 linux-4.1.19-x86_64
+```
 
 If so, then step 4 - profit!
 
@@ -48,7 +50,8 @@ If so, then step 4 - profit!
 So Docker requires a few kernel options unfortunately missing from the standard build NetGear has given us.  The latest beta has many options selected that were previously missing (NAT and networking related), but there's still a few that Docker needs to run but are missing.  And unfortunately, some of those options can't be compiled as modules, meaning you have to do a full kernel rebuild.
 
 The options in particular we need are in this gist:
-https://gist.github.com/powareverb/ca3de1df3ca83cebde23c5807edb8325
+<https://gist.github.com/powareverb/ca3de1df3ca83cebde23c5807edb8325>
+
 There are likely some other configs which would be useful, but this will get us started.
 
 Lets start by grabbing the kernel and getting set up.  SSH into the Virtual NAS and continue with the following.
@@ -83,8 +86,8 @@ cat .config | grep CONFIG_POSIX_MQUEUE
 If you want to check other kernel options for Docker, turns out there's a script for that.
 
 ```
-#Docker missing kernel modules… Check:
- wget https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
+#Docker missing kernel modules check:
+wget https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
 chmod +x ./check-config.sh
 ./check-config.sh
 ```
@@ -109,7 +112,7 @@ depmod -a
 
 #### Installing the new kernel
 
--- WARNING: These instructions are for installing the kernel on a VM, installing a new kernel on a hardware NAS is problematic!
+> *WARNING: These instructions are for installing the kernel on a VM, installing a new kernel on a hardware NAS is problematic!*
 
 ```
 #Still in kernel dir?
@@ -202,6 +205,4 @@ This message shows that your installation appears to be working correctly.
 
 ### Fin
 
-As usual
-
-
+As usual, feel free to contact me if you have any comments or questions!
