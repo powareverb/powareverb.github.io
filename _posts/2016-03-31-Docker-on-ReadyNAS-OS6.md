@@ -6,12 +6,27 @@ published: true
 
 As it turns out, not as difficult as I thought.  On a VM at least...
 
-> *NOTE: This post will likely be updated later with code I actually checked...*
+[Vote for support of Docker on ReadyNAS on the Ideas Exchange](https://community.netgear.com/t5/Idea-Exchange-for-ReadyNAS/Support-Docker-on-ReadyNAS-OS-6/idi-p/1069851#M234)
 
 ## Running Docker on ReadyNAS OS6 - From start to finish
 
 So, not content with running Docker on All-The-Pis, I thought that I'd have a bash at running Docker on my new ReadyNAS (x86).  This thing is a beast, and it'd be awesome to run some long term containers on it.  
 In the short term, I've instead started testing the idea by using the ReadyNAS VHD provided by NetGear.  Awesome to check things out without breaking/bricking the existing NAS.
+
+### Why Docker?
+
+I think Docker is a perfect fit for running slightly more custom apps on the NAS - heck, you could even run the ReadyNAS plugin system as Docker images if you liked.
+
+- It gives a solid, simple way of compartmentalising applications away from a host - e.g. the ReadyNAS itself.
+- It lets you run these things fast, pretty much bare metal fast in comparison to a VM.
+- It's already well used and has a large library of images, support, etc.
+
+I'm thinking of using it for adding things like
+- MQTT messaging server
+- SyncThing
+- Distributed file storage system
+- Distributed database (e.g. Crate.io)
+- A Docker container repository (for x86 and my Arm images)
 
 ### Getting a VM started
 
@@ -206,3 +221,6 @@ This message shows that your installation appears to be working correctly.
 ### Fin
 
 As usual, feel free to contact me if you have any comments or questions!
+
+[Vote for support of Docker on ReadyNAS on the Ideas Exchange](https://community.netgear.com/t5/Idea-Exchange-for-ReadyNAS/Support-Docker-on-ReadyNAS-OS-6/idi-p/1069851#M234)
+
