@@ -1,12 +1,12 @@
 ---
 layout: page
-title: About
+title: About me
 permalink: /about/
 ---
 
 ### About Me
 
-A place to include any other types of information that you'd like to include about yourself.
+Just your every-day code monkey, from small town New Zealand.  I mainly work on tech that's .NET focussed, though I've had lots of different experiences.  Also a huge fan of virtualisation, and Docker. Photographer in my spare time, and father of two.
 
 ### Contact Me
 
