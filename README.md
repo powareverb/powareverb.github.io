@@ -1,4 +1,4 @@
 # Codemonkey Blog
 
-My personal site / blog.  Runs on Jekyll.
+My personal coding site / blog.  Runs on Jekyll.
 TODO: Write more stuff :)
