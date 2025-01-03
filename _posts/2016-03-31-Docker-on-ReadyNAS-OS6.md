@@ -22,6 +22,7 @@ I think Docker is a perfect fit for running slightly more custom apps on the NAS
 - It's already well used and has a large library of images, support, etc.
 
 I'm thinking of using it for adding things like
+
 - MQTT messaging server
 - SyncThing
 - Distributed file storage system
@@ -33,7 +34,7 @@ I'm thinking of using it for adding things like
 So on a dev rig with VirtualBox installed, I download the VM and get started.
 Browse to: <http://apps.readynas.com/pages/?page_id=143> and grab the VM file.
 
-```
+```sh
 wget http://apps.readynas.com/download/ReadyNASOS-6.4.2-x86_64.vmdk
 ```
 
@@ -52,7 +53,7 @@ Download the relevant img file, go to your virtual NAS in a browser and upgrade 
 
 This will take a while, so sit back and enjoy the blinkenlights.  Grab a coffee or something.  Once that's done, make sure you have SSH enabled on the Virtual NAS (on the Admin -> Settings screen) and SSH into the VM.  
 
-```
+```sh
 uname -a
 # You should get something matching the new kernel, e.g.:
 linux-4.1.19-x86_64
@@ -71,7 +72,7 @@ There are likely some other configs which would be useful, but this will get us 
 
 Lets start by grabbing the kernel and getting set up.  SSH into the Virtual NAS and continue with the following.
 
-```
+```sh
 mkdir /data/Documents/kernel-rebuild
 cd /data/Documents/kernel-rebuild
 wget https://www.readynas.com/download/GPL/readynasos/6.5.0/linux-4.1.19-178-x86_64.tar.xz
@@ -87,9 +88,10 @@ cp arch/x86/configs/defconfig.x86 .config
 ```
 
 #### Configuring the Docker compatible kernel
+
 You should now have a good to go kernel tree. We need to merge in the diff I mentioned earlier:
 
-```
+```sh
 # Haven't checked this for syntax yet, but this is the general idea
 wget https://gist.githubusercontent.com/powareverb/ca3de1df3ca83cebde23c5807edb8325/raw/d3b9621cd3863425db0e0993445dbe575bbf4d43/.config-readynas.diff
 patch .config .config-readynas.diff
@@ -100,7 +102,7 @@ cat .config | grep CONFIG_POSIX_MQUEUE
 
 If you want to check other kernel options for Docker, turns out there's a script for that.
 
-```
+```sh
 #Docker missing kernel modules check:
 wget https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
 chmod +x ./check-config.sh
@@ -113,7 +115,7 @@ This will list any kernel options that are needed but missing from the default k
 
 This one is easy... Ish :)
 
-```
+```sh
 # Install some build tools
 apt-get install build-essential libncurses5-dev bc
 
@@ -129,7 +131,7 @@ depmod -a
 
 > *WARNING: These instructions are for installing the kernel on a VM, installing a new kernel on a hardware NAS is problematic!*
 
-```
+```sh
 #Still in kernel dir?
 cd /usr/src/linux
 ls -la arch/x86/boot/bzImage
@@ -141,7 +143,7 @@ cp arch/x86/boot/bzImage /mnt/tmp/KERNEL
 
 After that's done, you should be able to reboot into your new kernel!  To check:
 
-```
+```sh
 modprobe configs
 lsmod
 
@@ -153,7 +155,7 @@ zcat /proc/config.gz
 
 We need a copy of a newer version of init-system-helpers, as the version on the ReadyNAS OS is too old.  To achieve this, I've used the version from wheezy-backports, by doing the following:
 
-```
+```sh
 nano -w /etc/apt/sources.list
 
 #Add the following line
@@ -168,7 +170,7 @@ apt-get install init-system-helpers/wheezy-backports
 
 ### Installing Docker itself
 
-```
+```sh
 apt-get install perl git wget
 apt-get install aufs-tools cgroupfs-mount cgroup-bin
 apt-get install docker-engine
@@ -178,7 +180,7 @@ apt-get install docker-engine
 
 Easiest thing here is to check:
 
-```
+```sh
 systemctl status docker-engine
 # Should be running
 
@@ -205,7 +207,7 @@ Server:
 
 With that confirmed, might as well run a docker image!
 
-```
+```sh
 root@nas-virtualbox:~# docker run hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
@@ -223,4 +225,3 @@ This message shows that your installation appears to be working correctly.
 As usual, feel free to contact me if you have any comments or questions!
 
 [Vote for support of Docker on ReadyNAS on the Ideas Exchange](https://community.netgear.com/t5/Idea-Exchange-for-ReadyNAS/Support-Docker-on-ReadyNAS-OS-6/idi-p/1069851#M234)
-
